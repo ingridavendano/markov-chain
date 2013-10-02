@@ -82,12 +82,19 @@ def make_text(chain):
         first_char = starting_point[0][0][0]
 
     sentence = ""
+    ending_punctuation = [".", "!", "?"]
+    periods = 0
 
-    while len(sentence) < 200:
+    # while len(sentence) < 140 and periods < 2:
+    while periods < 3 and len(sentence) < 160:
         first_word = starting_point[0]
         second_word = starting_point[1]
         third_word = random.choice(chain[starting_point])
         sentence += first_word + " " 
+
+        for i in range(len(first_word)):
+            if first_word[i] in ending_punctuation:
+                periods += 1
 
         starting_point = (second_word,third_word)
 
@@ -95,6 +102,14 @@ def make_text(chain):
             sentence += second_word + " " + third_word + " "
             break
 
+    if sentence[-1] in ending_punctuation:
+        return sentence
+
+    for i in range(len(sentence))[::-1]:
+        if sentence[i] in ending_punctuation:
+            sentence = sentence[:i+1]
+            break
+           
     return sentence
 
 
@@ -102,8 +117,16 @@ def main():
     corpus = read_in_file()
     
     chain_dict = make_chains(corpus)
-    random_text = make_text(chain_dict)
-    print random_text
+
+    run = 'y'
+
+    while run == 'y':
+        random_text = make_text(chain_dict)
+        print "\n"
+        print random_text
+        print "Character count: %d" % len(random_text)
+        print "\n"
+        run = raw_input("Want a Graham Crack? ('y' or 'n') ")
 
 
 if __name__ == "__main__":
